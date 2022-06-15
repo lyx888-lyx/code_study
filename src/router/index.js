@@ -18,7 +18,10 @@ const routes = [
       {
         path: 'main',
         name: 'StudentMain',
-        component: () => import('../components/Student/Home')
+        component: () => import('../components/Student/Home'),
+        children: [
+
+        ]
       },
       {
         path: 'info',
@@ -43,6 +46,16 @@ const routes = [
             }
           }
         ]
+      },
+      {
+        path: 'task',
+        name: 'StudentTask',
+        component: () => import('../components/Student/StudentTask/StudentTask')
+      },
+      {
+        path: 'topic',
+        name: 'StudentTopic',
+        component: () => import('../components/Student/Topic/StudentTopic')
       }
     ]
   },

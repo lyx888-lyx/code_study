@@ -1,43 +1,71 @@
 <template>
   <div class="mainAll">
-    <div class="main">
-      <div class="main_title">
-        <div class="main_title_left"></div>
-        任务中心
-      </div>
-      <div class="homework" v-for="item in 3">
-        <div class="homework_main">
-          <span>青春是一个短暂的美梦, 当你醒来时, 它早已消失无踪</span>
-        </div>
-        <div class="el-icon-arrow-right" style="float: right;"></div>
-        <el-divider></el-divider>
-      </div>
+    <div style="display: flex;justify-content: space-between;width: 67%;margin: 20px auto;background-color:#fff;">
+      <Carousel/>
+      <Collapse />
     </div>
 
     <div class="content">
       <div class="main_title">
         <div class="main_title_left"></div>
-        试题中心
+        任务中心
       </div>
       <el-table
           :data="tableData"
           stripe
           style="width: 100%;z-index: 998">
         <el-table-column
-            prop="date"
-            label="题目"
-            width="180">
-        </el-table-column>
-        <el-table-column
             prop="name"
-            label="回答次数"
+            label="任务名称"
             width="180">
         </el-table-column>
         <el-table-column
-            prop="address"
-            label="难度">
+            prop="date"
+            label="开始时间"
+            width="280">
+        </el-table-column>
+        <el-table-column
+            prop="date"
+            label="截止时间"
+            width="280">
+        </el-table-column>
+        <el-table-column
+            fixed="right"
+            label="操作"
+            width="120">
+          <template slot-scope="scope">
+            <el-button
+                @click.native.prevent="goTask(scope.$index, tableData)"
+                type="primary"
+                size="small">
+              去完成
+            </el-button>
+          </template>
         </el-table-column>
       </el-table>
+    </div>
+
+    <div class="main">
+      <div class="main_title">
+        <div class="main_title_left"></div>
+        任务中心
+      </div>
+      <div class="outHomework" v-for="item in 4">
+        <div class="homework" >
+          <div class="homework_main">
+            <span>青春是一个短暂的美梦, 当你醒来时, 它早已消失无踪</span>
+          </div>
+          <div class="releaseTime">
+            2022-6-15
+          </div>
+          <div class="goComplete">
+            <el-button type="primary" size="small">去完成</el-button>
+          </div>
+        </div>
+        <el-divider style="margin: 0 !important;"></el-divider>
+      </div>
+
+
     </div>
 
     <div class="paper">
@@ -51,7 +79,7 @@
           style="width: 100%">
         <el-table-column
             prop="date"
-            label="题目"
+            label="任务名称"
             width="180">
         </el-table-column>
         <el-table-column
@@ -69,8 +97,14 @@
 </template>
 
 <script>
+import Carousel from "../Carousel/carousel";
+import Collapse from '../Collapse/collapse';
 export default {
   name: "Main",
+  components: {
+    Carousel,
+    Collapse
+  },
   data() {
     return {
       activeIndex: '1',
@@ -96,6 +130,9 @@ export default {
   methods: {
     handleSelect(key, keyPath) {
       console.log(key, keyPath);
+    },
+    goTask(index, data) {
+      this.$router.push('/student/task');
     }
   }
 }
@@ -171,6 +208,9 @@ export default {
     .homework {
       //padding: 10px;
       margin-top: 5px;
+      display: flex;
+      justify-content: space-around;
+      color: #303133;
     }
   }
 
@@ -249,5 +289,9 @@ export default {
 
   .my {
   }
+}
+
+.el-divider {
+  margin: 15px;
 }
 </style>

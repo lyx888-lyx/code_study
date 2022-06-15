@@ -2,7 +2,7 @@
   <div class="stAll">
     <div class="header">
       <div class="header_left">
-        <img src="logo.png" alt="error" height="40" style="margin-top: 15px" />
+        <img src="logo.png" alt="error" height="60" />
       </div>
       <div class="header_right">
         <el-menu default-active="/student/main" class="el-menu-demo" mode="horizontal" @select="handleSelect">
