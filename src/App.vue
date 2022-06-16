@@ -7,6 +7,10 @@
 </template>
 
 <style lang="less">
+#app,html {
+  background-color: #f5f5f5;
+  width: 100%;
+}
 .v-enter,
 .v-leave-to {
   opacity: 0;

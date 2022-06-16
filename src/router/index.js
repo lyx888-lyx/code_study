@@ -18,10 +18,7 @@ const routes = [
       {
         path: 'main',
         name: 'StudentMain',
-        component: () => import('../components/Student/Home'),
-        children: [
-
-        ]
+        component: () => import('../components/Student/Home')
       },
       {
         path: 'info',
@@ -56,6 +53,11 @@ const routes = [
         path: 'topic',
         name: 'StudentTopic',
         component: () => import('../components/Student/Topic/StudentTopic')
+      },
+      {
+        path: 'taskCenter',
+        name: 'StudentTask',
+        component: () => import('../components/Student/TaskCenter/TaskCenter')
       }
     ]
   },

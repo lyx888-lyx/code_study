@@ -7,7 +7,8 @@ export default new Vuex.Store({
     state: {
         isBlack: '',
         isColl: true,
-        comName: ''
+        comName: '',
+        subject: {}
     },
     mutations: {
         check(state, status) {
@@ -23,6 +24,9 @@ export default new Vuex.Store({
         },
         changeComName(state, comName) {
             state.comName = comName;
+        },
+        addSubject(state, data) {
+            state.subject = data;
         }
     },
     actions: {},

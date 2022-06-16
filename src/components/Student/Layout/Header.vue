@@ -11,9 +11,9 @@
               <div @click="navigate" @keypress.enter="navigate" role="link">学习中心</div>
             </router-link>
           </el-menu-item>
-          <el-menu-item index="2">
-            <router-link to="/student/main" v-slot="{navigate, href}" custom>
-              <div @click="navigate" @keypress.enter="navigate" role="link">我的试卷</div>
+          <el-menu-item index="/student/taskCenter" :route="{path: '/student/taskCenter'}">
+            <router-link to="/student/taskCenter" v-slot="{navigate, href}" custom>
+              <div @click="navigate" @keypress.enter="navigate" role="link">任务中心</div>
             </router-link>
           </el-menu-item>
           <el-menu-item index="3">消息中心</el-menu-item>

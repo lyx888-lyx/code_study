@@ -4,7 +4,7 @@
     <transition name="el-fade-in-linear">
       <router-view/>
     </transition>
-    <Footer style="margin-top: 15px;"/>
+    <Footer/>
   </div>
 </template>
 

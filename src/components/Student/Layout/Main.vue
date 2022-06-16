@@ -132,7 +132,9 @@ export default {
       console.log(key, keyPath);
     },
     goTask(index, data) {
-      this.$router.push('/student/task');
+      this.$router.push({
+        path: '/student/task/'
+      });
     }
   }
 }
@@ -140,6 +142,7 @@ export default {
 
 <style scoped lang="less">
 .mainAll {
+  min-height: 100%;
   width: 100%;
   touch-action: pan-y;
   background-color: #f6f8f8;

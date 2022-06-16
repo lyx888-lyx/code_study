@@ -44,7 +44,7 @@
             width="120">
           <template slot-scope="scope">
             <el-button
-                @click.native.prevent="goTopic(scope.$index, tableData)"
+                @click.native.prevent="goTopic(scope.$index, scope.row)"
                 type="primary"
                 size="small">
               去完成
@@ -104,8 +104,15 @@ export default {
       }
       this.tableData = data
     },
-    goTopic() {
-      this.$router.push('/student/topic')
+    goTopic(index, data) {
+      console.log(data.type);
+      this.$store.commit("addSubject", data);
+      this.$router.push({
+        path: '/student/topic',
+        query: {
+          'type': data.type
+        }
+      })
     }
   },
   mounted() {
@@ -118,6 +125,7 @@ export default {
   .all {
     width: 80%;
     margin: 80px auto 0;
-    background-color: #f6f8f8;
+    //background-color: #f6f8f8;
+    min-height: 80vh;
   }
 </style>
