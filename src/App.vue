@@ -7,9 +7,10 @@
 </template>
 
 <style lang="less">
-#app,html {
+#app, html, body {
   background-color: #f5f5f5;
   width: 100%;
+  margin: 0;
 }
 .v-enter,
 .v-leave-to {

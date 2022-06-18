@@ -29,7 +29,7 @@ export default {
 #record {
   height: 65px;
   line-height: 65px;
-  width: 100%;
+  //width: 100%;
   //width: 600px;
   //background-color: #20a0ff;
   text-align: center;

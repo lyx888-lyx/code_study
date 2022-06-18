@@ -13,25 +13,31 @@
         <el-submenu index="/teacher/studentManager">
           <template slot="title">
             <i class="el-icon-user"></i>
-            <span slot="title">用户管理</span>
+            <span slot="title">班级管理</span>
           </template>
           <el-menu-item-group>
-            <template slot="title">用户管理</template>
+            <template slot="title">班级管理</template>
+            <el-menu-item index="/teacher/main/classesManager" :route="{path: '/teacher/main/classesManager'}">
+              <router-link to="/teacher/main/classesManager" tag="span" style="display: inline-block;width: 100%">班级管理
+              </router-link>
+            </el-menu-item>
             <el-menu-item index="/teacher/main/studentManager" :route="{path: '/teacher/main/studentManager'}">
               <router-link to="/teacher/main/studentManager" tag="span" style="display: inline-block;width: 100%">学生管理
               </router-link>
             </el-menu-item>
           </el-menu-item-group>
         </el-submenu>
-        <el-submenu index="3">
+        <el-submenu index="/teacher/topicManager">
           <template slot="title">
             <i class="el-icon-reading"></i>
-            <span slot="title">卷题管理</span>
+            <span slot="title">试题管理</span>
           </template>
           <el-menu-item-group>
-            <template slot="title">卷题管理</template>
-            <el-menu-item index="3-1">试卷列表</el-menu-item>
-            <el-menu-item index="3-2">题目列表</el-menu-item>
+            <template slot="title">试题管理</template>
+            <el-menu-item index="/teacher/main/topicManager" :route="{path: '/teacher/main/topicManager'}">
+              <router-link to="/teacher/main/topicManager" tag="span" style="display: inline-block;width: 100%">题目管理
+              </router-link>
+            </el-menu-item>
           </el-menu-item-group>
         </el-submenu>
         <el-submenu index="4">
@@ -45,15 +51,17 @@
             <el-menu-item index="4-2">任务创建</el-menu-item>
           </el-menu-item-group>
         </el-submenu>
-        <el-submenu index="5">
+        <el-submenu index="/teacher/information">
           <template slot="title">
             <i class="el-icon-chat-line-square"></i>
             <span slot="title">消息中心</span>
           </template>
           <el-menu-item-group>
             <template slot="title">消息中心</template>
-            <el-menu-item index="5-1">消息列表</el-menu-item>
-            <el-menu-item index="5-2">消息发送</el-menu-item>
+            <el-menu-item index="/teacher/main/information" :route="{path: '/teacher/main/information'}">
+              <router-link to="/teacher/main/information" tag="span" style="display: inline-block;width: 100%">消息管理
+              </router-link>
+            </el-menu-item>
           </el-menu-item-group>
         </el-submenu>
         <el-submenu index="6">

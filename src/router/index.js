@@ -6,6 +6,10 @@ Vue.use(VueRouter)
 const routes = [
   {
     path: '/',
+    redirect: '/login'
+  },
+  {
+    path: '/login',
     name: 'login',
     component: () => import('../views/Login')
   },
@@ -99,12 +103,41 @@ const routes = [
             meta: {
               title: '个人中心'
             }
+          },
+          {
+            path: 'classesManager',
+            name: 'ClassesManager',
+            component: () => import('../components/Teacher/Manager/ClassesManager'),
+            meta: {
+              title: '班级管理'
+            }
+          },
+          {
+            path: 'information',
+            name: 'Information',
+            component: () => import('../components/Teacher/Manager/Information'),
+            meta: {
+              title: '消息管理'
+            }
+          },
+          {
+            path: 'topicManager',
+            name: 'TopicManager',
+            component: () => import('../components/Teacher/Manager/TopicManager'),
+            meta: {
+              title: '题目管理'
+            }
           }
         ]
       }
     ]
   }
 ]
+
+const VueRouterPush = VueRouter.prototype.push
+VueRouterPush.prototype.push = function push (to) {
+  return VueRouterPush.call(this, to).catch(err => err)
+}
 
 const router = new VueRouter({
   routes

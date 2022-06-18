@@ -6,12 +6,18 @@ import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 import 'default-passive-events';
 import * as echarts from 'echarts';
+
 Vue.prototype.$echarts = echarts;
+import axios from "axios";
 //顶部页面加载条
 import NProgress from 'nprogress';
 import 'nprogress/nprogress.css';
+import {debounce, throttle} from "./common/common";
 
 Vue.config.productionTip = false
+Vue.prototype.$axios = axios;
+Vue.prototype.$debounce = debounce;
+Vue.prototype.$throttle = throttle;
 
 Vue.use(ElementUI);
 NProgress.configure({

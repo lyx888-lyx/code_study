@@ -16,6 +16,7 @@
 </template>
 
 <script>
+import {studentLogin, teacherLogin} from '../../api/api';
 export default {
   name: "TeacherLogin",
   data() {
@@ -58,12 +59,12 @@ export default {
   },
   methods: {
     submitForm(formName) {
+      let that = this;
       this.$refs[formName].validate((valid) => {
         if (valid) {
+          that.goLogin();
           // let md5Password = this.$md5(this.ruleForm.password)
           // localStorage.setItem('lockPassword', md5Password);
-          this.$notify.success("登录成功");
-          this.$router.push('/teacher/main')
         } else {
           console.log('error submit!!');
           return false;
@@ -72,6 +73,34 @@ export default {
     },
     resetForm(formName) {
       this.$refs[formName].resetFields();
+    },
+    goLogin() {
+      let data = {
+        phone: this.ruleForm.username,
+        password: this.ruleForm.password,
+        roleGroup: "teacher"
+      }
+      teacherLogin(data).then((res) => {
+        console.log(res);
+        if (res.message.login_code === 1) {
+          localStorage.setItem('token', res.message.token);
+          console.log(res.message.data)
+          localStorage.setItem('info', JSON.stringify(res.message.data));
+          this.$notify({
+            message: '登录成功',
+            type: 'success',
+            offset: 100
+          });
+          this.$router.push('/teacher/main')
+        } else {
+          this.$notify({
+            message: res.data.message.data,
+            type: 'error'
+          })
+        }
+      }).catch((err) => {
+        console.log(err);
+      })
     }
   }
 }

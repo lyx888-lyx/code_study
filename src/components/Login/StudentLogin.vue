@@ -16,8 +16,7 @@
 </template>
 
 <script>
-// import {apiAddress} from "@/request/api";
-
+import { studentLogin } from '../../api/api';
 export default {
   name: "StudentLogin",
   data() {
@@ -62,14 +61,8 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          // this.goLogin();
+          this.goLogin();
           // this.$debounce(this.goLogin, 1000);
-          this.$notify({
-            message: '登录成功',
-            type: 'success',
-            offset: 100
-          });
-          this.$router.push('/student/main');
         } else {
           this.$notify({
             title: '警告',
@@ -84,21 +77,28 @@ export default {
       this.$refs[formName].resetFields();
     },
     goLogin() {
-      let data = {}
-      // apiAddress(data).then((res) => {
-      //   console.log(res)
-      //   this.$notify({
-      //     title: '成功',
-      //     message: '登录成功',
-      //     type: 'success'
-      //   });
-      // }).catch((err) => {
-      //   this.$notify.error({
-      //     title: '错误',
-      //     message: '登录失败'
-      //   });
-      //   console.log(err)
-      // })
+      let data = {
+        phone: this.ruleForm.username,
+        password: this.ruleForm.password,
+        roleGroup: "student"
+      }
+      studentLogin(data).then((res) => {
+        if (res.message.login_code === 1) {
+          localStorage.setItem('token', res.message.token);
+          localStorage.setItem('info', res.message.data);
+          this.$notify({
+            message: '登录成功',
+            type: 'success',
+            offset: 100
+          });
+          this.$router.push('/student/main');
+        } else {
+          this.$notify({
+            message: res.message.data,
+            type: 'error'
+          })
+        }
+      })
     }
   }
 }

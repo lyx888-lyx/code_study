@@ -1,6 +1,6 @@
 <template>
   <div class="mainAll">
-    <div style="display: flex;justify-content: space-between;width: 67%;margin: 20px auto;background-color:#fff;">
+    <div style="display: flex;justify-content: space-between;width: 67%;margin: 20px auto;">
       <Carousel/>
       <Collapse />
     </div>
@@ -8,7 +8,7 @@
     <div class="content">
       <div class="main_title">
         <div class="main_title_left"></div>
-        任务中心
+        习题中心
       </div>
       <el-table
           :data="tableData"
@@ -41,55 +41,6 @@
               去完成
             </el-button>
           </template>
-        </el-table-column>
-      </el-table>
-    </div>
-
-    <div class="main">
-      <div class="main_title">
-        <div class="main_title_left"></div>
-        任务中心
-      </div>
-      <div class="outHomework" v-for="item in 4">
-        <div class="homework" >
-          <div class="homework_main">
-            <span>青春是一个短暂的美梦, 当你醒来时, 它早已消失无踪</span>
-          </div>
-          <div class="releaseTime">
-            2022-6-15
-          </div>
-          <div class="goComplete">
-            <el-button type="primary" size="small">去完成</el-button>
-          </div>
-        </div>
-        <el-divider style="margin: 0 !important;"></el-divider>
-      </div>
-
-
-    </div>
-
-    <div class="paper">
-      <div class="main_title">
-        <div class="main_title_left"></div>
-        试题中心
-      </div>
-      <el-table
-          :data="tableData"
-          stripe
-          style="width: 100%">
-        <el-table-column
-            prop="date"
-            label="任务名称"
-            width="180">
-        </el-table-column>
-        <el-table-column
-            prop="name"
-            label="回答次数"
-            width="180">
-        </el-table-column>
-        <el-table-column
-            prop="address"
-            label="难度">
         </el-table-column>
       </el-table>
     </div>

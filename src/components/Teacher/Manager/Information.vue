@@ -1,0 +1,124 @@
+<template>
+  <div>
+    <el-card class="box-card">
+      <el-table
+          :data="tableData"
+          stripe
+          style="width: 100%">
+        <el-table-column
+            prop="date"
+            label="日期"
+            width="180">
+        </el-table-column>
+        <el-table-column
+            prop="name"
+            label="姓名"
+            width="180">
+        </el-table-column>
+        <el-table-column
+            prop="address"
+            label="地址">
+        </el-table-column>
+        <el-table-column
+            align="right">
+          <template slot="header" slot-scope="scope">
+            <el-button type="primary" size="mini" @click="dialogFormVisible = true">添加消息</el-button>
+          </template>
+          <template slot-scope="scope">
+            <el-button
+                size="mini"
+                @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+            <el-button
+                size="mini"
+                type="danger"
+                @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+      <el-dialog title="发布消息" :visible.sync="dialogFormVisible">
+        <el-form :model="form">
+          <el-form-item label="消息内容" :label-width="formLabelWidth">
+            <el-input
+                type="textarea"
+                :rows="4"
+                placeholder="请输入消息内容"
+                v-model="form.content" />
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="dialogFormVisible = false">取 消</el-button>
+          <el-button type="primary" @click="yesAddInformation">确 定</el-button>
+        </div>
+      </el-dialog>
+    </el-card>
+  </div>
+</template>
+
+<script>
+import { addInformation } from '../../../api/api';
+export default {
+  name: "Information",
+  data() {
+    return {
+      tableData: [{
+        date: '2016-05-02',
+        name: '王小虎',
+        address: '上海市普陀区金沙江路 1518 弄'
+      }, {
+        date: '2016-05-04',
+        name: '王小虎',
+        address: '上海市普陀区金沙江路 1517 弄'
+      }, {
+        date: '2016-05-01',
+        name: '王小虎',
+        address: '上海市普陀区金沙江路 1519 弄'
+      }, {
+        date: '2016-05-03',
+        name: '王小虎',
+        address: '上海市普陀区金沙江路 1516 弄'
+      }],
+      dialogFormVisible: false,
+      form: {
+        content: ''
+      },
+      formLabelWidth: '120px'
+    }
+  },
+  methods: {
+    handleEdit(index, row) {
+      console.log(index, row);
+    },
+    handleDelete(index, row) {
+      console.log(index, row);
+    },
+    yesAddInformation() {
+      console.log(this.form.content);
+      let info = JSON.parse(localStorage.getItem('info'));
+      let data = {
+        igContent: this.form.content,
+        igForId: info.tid,
+        igRoleId: info.troleId,
+        igFromAll: 2,
+        igFromClass: 6
+      }
+      addInformation(data).then((res) => {
+        if (res.message.data.createCode === 1) {
+          this.$notify.success(res.message.data.result);
+          this.dialogFormVisible = false;
+          this.form.content = '';
+        } else {
+          this.$notify.error(res.message.data.result);
+          this.dialogFormVisible = false;
+        }
+      }).catch((err) => {
+        this.$notify.error(err);
+        console.log(err);
+      });
+    }
+  }
+}
+</script>
+
+<style scoped>
+
+</style>
