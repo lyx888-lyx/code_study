@@ -6,18 +6,41 @@
         <div>添加班级</div>
       </div>
     </div>
-    <el-card shadow="never" v-for="item in 5" :body-style="{ padding: '0px' }" style="max-width: 25%;max-height: 300px;margin: 15px">
+    <el-card shadow="never" v-for="item in classList" :key="item.clId" :body-style="{ padding: '0px' }" style="max-width: 25%;max-height: 350px;margin: 15px">
       <img style="width: 350px;height: 200px"
            src="https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png"
            class="image" alt="暂无">
       <div style="padding: 14px;">
-        <span>好吃的汉堡</span>
+        <span>{{item.clName}} —— 班级介绍: {{item.clIntroduce}}</span>
         <div class="bottom clearfix">
-          <time class="time">{{ currentDate }}</time>
-          <el-button type="text" class="button">操作按钮</el-button>
+          <time class="time">
+            <el-tag type="danger" effect="plain">班级课程时间: {{ item.clCreateTime }} —— {{item.clEndTime}}</el-tag>
+          </time>
+          <el-button type="primary" class="button" style="margin-top: 15px;padding: 5px" @click="addStudentId(item.clId)">导入学生信息</el-button>
         </div>
       </div>
     </el-card>
+    <el-dialog title="批量添加学生" :visible.sync="addStudentDialogFormVisible">
+      <el-form :model="addStudent" style="text-align: center">
+        <div class="block">
+          <el-image src="/addStudent.png"></el-image>
+        </div>
+        <el-upload
+            class="upload-demo"
+            drag
+            action="#"
+            :on-change="changeStudentInfoFile"
+            multiple>
+          <i class="el-icon-upload"></i>
+          <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+          <div class="el-upload__tip" slot="tip">只能上传xls/xlsx文件，且不超过1MB</div>
+        </el-upload>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="addStudentDialogFormVisible = false">取 消</el-button>
+        <el-button type="primary" @click="YesAddStudent">确 定</el-button>
+      </div>
+    </el-dialog>
 
     <el-drawer
         title="添加班级"
@@ -111,7 +134,8 @@
 </template>
 
 <script>
-import { createClass } from '../../../api/api';
+import {getClass, inputByExcel} from '../../../api/api';
+
 export default {
   name: "ClassesManager",
   data() {
@@ -121,11 +145,11 @@ export default {
       dialog: false,
       loading: false,
       form: {
-        className: '计应2002',
+        className: '',
         openTime: '',
         endTime: '',
         classStatus: '',
-        introduce: '网站开发',
+        introduce: '',
         headPicture: '',
       },
       options: [{
@@ -143,7 +167,15 @@ export default {
       disabled: false,
       autoUpload: false,
       addClassDialogVisible: false,
-      fileRaw: {}
+      fileRaw: {},
+      studentInfo: {},
+      classList: [],
+      addStudentDialogFormVisible: false,
+      addStudent: {
+        name: '',
+        region: ''
+      },
+      addStudentIdNum: ''
     }
   },
   methods: {
@@ -171,6 +203,7 @@ export default {
       clearTimeout(this.timer);
     },
     handleRemove(file) {
+      this.dialogImageUrl = '';
       console.log(file);
     },
     handlePictureCardPreview(file) {
@@ -204,6 +237,8 @@ export default {
     }).then((res) => {
         if (res.data.message.register_code === 1 && res.data.message.data.createCode === 1) {
           this.$notify.success(res.data.message.data.result);
+          this.restForm();
+          this.getAllClass();
         } else {
           this.$notify.error(res.data.message.data.result)
         }
@@ -214,7 +249,61 @@ export default {
     },
     changeFile(file,fileList) {
       this.fileRaw = file.raw
+    },
+    getAllClass() {
+      let info = JSON.parse(localStorage.getItem('info'));
+      let query = {
+        teacherId: info.tid
+      }
+      getClass(query).then((res) => {
+        if (res.message.data.createCode === 1) {
+          let result = res.message.data.result;
+          for (let i in result) {
+            if (result.hasOwnProperty(i)) {
+              let creTime = result[i].clCreateTime.split("T")[0];
+              let endTime = result[i].clEndTime.split("T")[0];
+              result[i].clCreateTime = creTime;
+              result[i].clEndTime = endTime;
+            }
+          }
+          this.classList = result;
+        } else {
+          this.$notify.error("暂无班级");
+        }
+      }).catch((err) => {
+        console.log(err);
+      })
+    },
+    changeStudentInfoFile(file) {
+      this.studentInfo = file.raw;
+    },
+    YesAddStudent() {
+      let formData = new FormData();
+      formData.append("classId", this.addStudentIdNum);
+      formData.append("studentExcel", this.studentInfo);
+
+      inputByExcel(formData).then((res) => {
+        console.log(res);
+      })
+    },
+    addStudentId(id) {
+      this.addStudentIdNum = id;
+      this.addStudentDialogFormVisible = true;
+    },
+    restForm() {
+      this.form = {
+        className: '',
+        openTime: '',
+        endTime: '',
+        classStatus: '',
+        introduce: '',
+        headPicture: '',
+      };
+      this.fileRaw = {};
     }
+  },
+  mounted() {
+    this.getAllClass();
   }
 }
 </script>

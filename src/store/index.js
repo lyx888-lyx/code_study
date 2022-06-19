@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import da from "element-ui/src/locale/lang/da";
 
 Vue.use(Vuex)
 

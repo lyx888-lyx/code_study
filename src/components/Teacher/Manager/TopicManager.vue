@@ -105,6 +105,16 @@
               </el-option>
             </el-select>
           </el-form-item>
+          <el-form-item v-if="form.type === '3'" label="题目答案" :label-width="formLabelWidth" style="width: 70%">
+            <el-select v-model="numsTf" placeholder="请选择" style="width: 100%">
+              <el-option
+                  v-for="item in TfOption"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value">
+              </el-option>
+            </el-select>
+          </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click="dialogFormVisible = false">取 消</el-button>
@@ -183,7 +193,18 @@ export default {
         value: 'D',
         label: 'D'
       }],
-      numsValue: []
+      TfOption: [
+        {
+          value: '正确',
+          label: '正确'
+        },
+        {
+          value: '错误',
+          label: '错误'
+        }
+      ],
+      numsValue: [],
+      numsTf: ''
     }
   },
   methods: {
@@ -196,7 +217,11 @@ export default {
       formData.append("topicName", this.form.topicName);
       formData.append("type", this.form.type);
       formData.append("topicText", this.form.topicText);
-      formData.append("option", "A " + this.form.topicNameA + "/" + "B " +this.form.topicNameB + "/" + "C " +this.form.topicNameC + "/" + "D " +this.form.topicNameD);
+      if (this.form.type === '1' || this.form.type === '2') {
+        formData.append("option", "A " + this.form.topicNameA + "/" + "B " +this.form.topicNameB + "/" + "C " +this.form.topicNameC + "/" + "D " +this.form.topicNameD);
+      } else if (this.form.type === '3') {
+        formData.append("option", "正确/错误")
+      }
       if (this.form.type === '1') {
         formData.append("answer", this.form.oneAnswer);
       } else if (this.form.type === '2') {
@@ -210,6 +235,8 @@ export default {
           }
         }
         formData.append("answer", letAnswer);
+      } else if (this.form.type === '3') {
+        formData.append("answer", this.numsTf);
       }
       formData.append("hyperlinkId", '0');
       formData.append("teacherId", info.tid);
@@ -224,6 +251,24 @@ export default {
         this.$notify.error(err);
         console.log(err);
       })
+    },
+    restForm() {
+      let form = {
+        topicName: '',
+        topicText: '',
+        topicNameA: '',
+        topicNameB: '',
+        topicNameC: '',
+        topicNameD: '',
+        oneAnswer: '',
+        date2: '',
+        delivery: false,
+        type: '',
+        resource: '',
+        desc: ''
+      }
+      this.numsTf = '';
+      this.numsValue = '';
     }
   }
 }

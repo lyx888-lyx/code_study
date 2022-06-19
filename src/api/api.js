@@ -55,3 +55,70 @@ export const addTopicNoPicture = (data) => {
         headers: { 'Content-Type': 'multipart/form-data'}
     })
 }
+
+/**
+ * 修改个人信息
+ * @param data
+ * @returns {AxiosPromise}
+ */
+export const updateInformation = (data) => {
+    return instance({
+        url: `${request}/teacher/updateInformation`,
+        method: 'post',
+        data: data,
+        headers: { 'Content-Type': 'multipart/form-data'}
+    });
+}
+
+/**
+ * 获取个人信息
+ * @param params
+ * @returns {AxiosPromise}
+ */
+export const getInformation = (params) => {
+    return instance({
+        url: `${request}/teacher/getInformation`,
+        method: 'get',
+        params: params
+    });
+}
+
+/**
+ * 获取所有班级
+ * @param params
+ * @returns {AxiosPromise}
+ */
+export const getClass = (params) => {
+    return instance({
+        url: `${request}/teacher/getClass`,
+        method: 'get',
+        params: params
+    })
+}
+
+/**
+ * Excel 批量导入学生信息
+ * @param data
+ * @returns {AxiosPromise}
+ */
+export const inputByExcel = (data) => {
+    return instance({
+        url: `${request}/teacher/inputByExcel`,
+        method: 'post',
+        data: data,
+        headers: { 'Content-Type': 'multipart/form-data'}
+    })
+}
+
+/**
+ * 获取指定班级的学生
+ * @param params
+ * @returns {AxiosPromise}
+ */
+export const getStudentByClass = (params) => {
+    return instance({
+        url: `${request}/teacher/getStudentByClass`,
+        method: 'get',
+        params: params
+    })
+}
