@@ -16,7 +16,11 @@
               <div @click="navigate" @keypress.enter="navigate" role="link">任务中心</div>
             </router-link>
           </el-menu-item>
-          <el-menu-item index="3">消息中心</el-menu-item>
+          <el-menu-item index="/student/myClass" :route="{path: '/student/myClass'}">
+            <router-link to="/student/myClass" v-slot="{navigate, href}" custom>
+              <div @click="navigate" @keypress.enter="navigate" role="link">我的班级</div>
+            </router-link>
+          </el-menu-item>
           <el-menu-item index="/student/info/data" :route="{path: '/student/info/data'}">
             <router-link to="/student/info/data" v-slot="{navigate, href}" custom>
               <div @click="navigate" @keypress.enter="navigate" role="link">个人中心</div>
@@ -99,7 +103,7 @@ export default {
     width: 100%;
     background-color: #fff;
     position: fixed;
-    z-index: 9999;
+    z-index: 999;
     top: 0;
     border-bottom: 1px solid #E6E6E6;
     display: flex;

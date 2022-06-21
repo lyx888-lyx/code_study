@@ -62,6 +62,16 @@ const routes = [
         path: 'taskCenter',
         name: 'StudentTask',
         component: () => import('../components/Student/TaskCenter/TaskCenter')
+      },
+      {
+        path: 'myClass',
+        name: 'MyClass',
+        component: () => import('../components/Student/MyClass/MyClass')
+      },
+      {
+        path: 'myMessage',
+        name: 'Message',
+        component: () => import('../components/Student/Message/Message')
       }
     ]
   },
@@ -126,6 +136,14 @@ const routes = [
             component: () => import('../components/Teacher/Manager/TopicManager'),
             meta: {
               title: '题目管理'
+            }
+          },
+          {
+            path: 'taskManager',
+            name: 'taskManager',
+            component: () => import('../components/Teacher/Manager/TaskManager'),
+            meta: {
+              title: '任务管理'
             }
           }
         ]

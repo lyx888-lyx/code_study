@@ -32,7 +32,7 @@ export default {
 
 <style scoped>
 .el-carousel {
-  width: 50%;
+  width: 48%;
 }
 
 .el-carousel__item h3 {

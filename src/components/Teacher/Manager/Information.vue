@@ -2,7 +2,8 @@
   <div>
     <el-card class="box-card">
       <el-table
-          :data="tableData"
+          v-if="pageList.data !== ''"
+          :data="pageList.data"
           stripe
           style="width: 100%">
         <el-table-column
@@ -11,8 +12,8 @@
             width="180">
         </el-table-column>
         <el-table-column
-            prop="name"
-            label="姓名"
+            prop="imText"
+            label="消息内容"
             width="180">
         </el-table-column>
         <el-table-column
@@ -35,6 +36,13 @@
           </template>
         </el-table-column>
       </el-table>
+      <el-pagination
+          style="margin-top: 20px"
+          background
+          layout="prev, pager, next"
+          :current-page="pageList.currentPage"
+          :total="pageList.totalPage">
+      </el-pagination>
       <el-dialog title="发布消息" :visible.sync="dialogFormVisible">
         <el-form :model="form">
           <el-form-item label="消息内容" :label-width="formLabelWidth">
@@ -55,7 +63,7 @@
 </template>
 
 <script>
-import { addInformation } from '../../../api/api';
+import {addInformation, getMessageByTeacherId} from '../../../api/api';
 export default {
   name: "Information",
   data() {
@@ -81,7 +89,9 @@ export default {
       form: {
         content: ''
       },
-      formLabelWidth: '120px'
+      formLabelWidth: '120px',
+      info: {},
+      pageList: {}
     }
   },
   methods: {
@@ -114,7 +124,33 @@ export default {
         this.$notify.error(err);
         console.log(err);
       });
+    },
+    getAllMessage() {
+      let query = {
+        teacherId: this.info.tid,
+        roleId: this.info.troleId,
+        page: 1,
+        count: 100
+      }
+      getMessageByTeacherId(query).then((res) => {
+        if (res.message.data.createCode === 1) {
+          let result = res.message.data.result;
+          if (result.data.length !== 0) {
+            result.data.createTime = result.data.createTime.split("T")[0];
+          }
+          this.pageList = result;
+          // this.classList = res.message.data.result;
+        } else {
+          this.$notify.error(res.message.data.result);
+        }
+      }).catch((err) => {
+        this.$notify.error(err);
+      })
     }
+  },
+  mounted() {
+    this.info = JSON.parse(localStorage.getItem('info'));
+    this.getAllMessage();
   }
 }
 </script>

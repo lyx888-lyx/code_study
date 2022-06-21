@@ -8,7 +8,7 @@
     </div>
     <el-card shadow="never" v-for="item in classList" :key="item.clId" :body-style="{ padding: '0px' }" style="max-width: 25%;max-height: 350px;margin: 15px">
       <img style="width: 350px;height: 200px"
-           src="https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png"
+           :src="item.clPicturePath"
            class="image" alt="暂无">
       <div style="padding: 14px;">
         <span>{{item.clName}} —— 班级介绍: {{item.clIntroduce}}</span>
@@ -264,6 +264,7 @@ export default {
               let endTime = result[i].clEndTime.split("T")[0];
               result[i].clCreateTime = creTime;
               result[i].clEndTime = endTime;
+              result[i].clPicturePath = this.$baseImgUrl + result[i].clPicturePath;
             }
           }
           this.classList = result;

@@ -1,23 +1,21 @@
 <template>
-  <div class="all">
+  <div class="all" style="min-height: 580px">
     <div class="main">
       <div class="left">
         <el-avatar shape="square" :size="70"
-                   src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"></el-avatar>
+                   :src="info.stPicturePath"></el-avatar>
         <el-divider/>
         <div class="left_main">
 
           <router-link to="/student/info/data" class="left_list "
                        :class="['item', $route.meta.index === 0 ? 'active' : '']" tag="div">
             <el-icon class="el-icon-user"/>
-<!--            <div @click="navigate" @keypress.enter="navigate" role="link" class="font">个人资料</div>-->
             <span class="font">个人资料</span>
           </router-link>
 
           <router-link class="left_list" :class="['item', $route.meta.index === 1 ? 'active' : '']"
                        to="/student/info/safety"  tag="div">
-            <el-icon class="el-icon-user"/>
-<!--            <div @click="navigate" @keypress.enter="navigate" role="link" class="font">个人资料</div>-->
+            <el-icon class="el-icon-setting"/>
             <span class="font">账号安全</span>
           </router-link>
         </div>
@@ -36,8 +34,27 @@
 import Echarts from './StudentEcharts';
 export default {
   name: "StudentInfo",
+  data() {
+    return {
+      info: {}
+    }
+  },
   components: {
     Echarts
+  },
+  methods: {
+    getInfo() {
+      let info = JSON.parse(localStorage.getItem('info'));
+      if (info.stPicturePath !== null || info.stPicturePath !== '') {
+        info.stPicturePath = this.$baseImgUrl + info.stPicturePath;
+      } else {
+        info.stPicturePath = 'https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png'
+      }
+      this.info = info;
+    }
+  },
+  mounted() {
+    this.getInfo();
   }
 }
 </script>

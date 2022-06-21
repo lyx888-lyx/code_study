@@ -1,5 +1,5 @@
 <template>
-  <el-header class="teacherHeader" :class="isShow?'bloack':'white'" style="border-bottom: 1px solid #ddd">
+  <el-header class="teacherHeader" :class="isShow?'bloack':'white'" style="border-bottom: 1px solid #ddd;">
     <div class="teacherHeader_left"><img src="logo.png" alt="error" height="60" /></div>
     <div class="teacherHeader_right">
       <div class="right_children">
@@ -90,6 +90,7 @@ export default {
   width: 100% !important;
   display: flex;
   align-items: center;
+  z-index: 1999;
 
   .teacherHeader_left {
     line-height: 30px;

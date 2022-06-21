@@ -7,7 +7,7 @@
         </template>
         <el-descriptions-item label="头像" :span="1">
           <div class="block">
-            <el-avatar shape="square" :size="50" src="https://cube.elemecdn.com/9/c2/f0ee8a3c7c9638a54940382568c9dpng.png"></el-avatar>
+            <el-avatar shape="square" :size="50" :src="t_info.tpicturePath === '' ? 'https://cube.elemecdn.com/9/c2/f0ee8a3c7c9638a54940382568c9dpng.png' : t_info.tpicturePath"></el-avatar>
           </div>
         </el-descriptions-item>
         <el-descriptions-item label="用户名" :span="1">{{t_info.tname}}</el-descriptions-item>
@@ -170,7 +170,11 @@ export default {
       let { name, gender, age, phone, qq, wx, mailbox, introduce } = this.form;
       formData.append("teacherId", this.t_info.tid);
       formData.append("name", name);
-      formData.append("gender", gender);
+      if (gender === '男') {
+        formData.append("gender", "1");
+      } else if (gender === '女') {
+        formData.append("gender", "2");
+      }
       formData.append("age", age);
       formData.append("phone", phone);
       formData.append("qq", qq);
@@ -181,6 +185,8 @@ export default {
       updateInformation(formData).then((res) => {
         if (res.message.data.createCode === 1) {
           this.$notify.success("修改成功");
+          this.getInfo();
+          this.getInformationByTeacher();
           this.dialogFormVisible = false;
           this.getInformationByTeacher();
         } else {
@@ -196,7 +202,9 @@ export default {
       }
       getInformation(query).then((res) => {
         if (res.message.data.createCode === 1) {
-          this.t_info = res.message.data.result;
+          let result = res.message.data.result;
+          result.tpicturePath = this.$baseImgUrl + result.tpicturePath;
+          this.t_info = result;
           localStorage.setItem('info', JSON.stringify(this.t_info));
         }
       })
@@ -204,6 +212,7 @@ export default {
   },
   mounted() {
     this.getInfo();
+    this.getInformationByTeacher();
   }
 }
 </script>

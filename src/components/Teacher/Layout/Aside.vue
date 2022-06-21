@@ -1,6 +1,6 @@
 <template>
-  <div style="margin-top: 0;margin-left: 0">
-    <el-aside :width="AsideWidth + 'px'" style="background-color: #fff;height: 100%">
+  <div style="margin-top: 0;margin-left: 0;">
+    <el-aside :width="AsideWidth + 'px'" style="height: 100%;background-color:#fff;">
       <el-menu :default-active="$route.path" class="el-menu-vertical-demo"
                :background-color="this.$store.state.isBlack ? '#242424':'#fff'"
                :text-color="this.$store.state.isBlack ? '#B3C0D1' : '#242424'" :collapse="isCollapse">
@@ -40,15 +40,17 @@
             </el-menu-item>
           </el-menu-item-group>
         </el-submenu>
-        <el-submenu index="4">
+        <el-submenu index="/teacher/taskManager">
           <template slot="title">
             <i class="el-icon-suitcase"></i>
             <span slot="title">任务管理</span>
           </template>
           <el-menu-item-group>
             <template slot="title">任务管理</template>
-            <el-menu-item index="4-1">任务列表</el-menu-item>
-            <el-menu-item index="4-2">任务创建</el-menu-item>
+            <el-menu-item index="/teacher/main/taskManager" :route="{path: '/teacher/main/taskManager'}">
+              <router-link to="/teacher/main/taskManager" tag="span" style="display: inline-block;width: 100%">任务管理
+              </router-link>
+            </el-menu-item>
           </el-menu-item-group>
         </el-submenu>
         <el-submenu index="/teacher/information">
@@ -78,7 +80,7 @@
           </el-menu-item-group>
         </el-submenu>
       </el-menu>
-      <div class="el-menu-vertical-children">
+      <div class="el-menu-vertical-children" style="float: left;font-size: 20px">
         <i class="el-icon-caret-right" v-show="isCollapse" @click="editMenu(false)"></i>
         <i class="el-icon-caret-left" v-show="!isCollapse" @click="editMenu(true)"></i>
       </div>
@@ -107,7 +109,7 @@ export default {
       this.isCollapse = status;
       if (this.isCollapse) {
         this.$store.commit("isCollSpan", true);
-        this.AsideWidth = 120;
+        this.AsideWidth = 100;
       } else {
         this.$store.commit("isCollSpan", false);
         this.AsideWidth = 240;

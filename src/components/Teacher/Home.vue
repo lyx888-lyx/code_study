@@ -1,14 +1,14 @@
 <template>
   <div>
-    <el-container :style="{height: scrollHeight}">
+    <el-container style="min-height: 650px">
       <Aside/>
-      <el-container>
+      <el-container >
 
         <el-header style="height: 0"></el-header>
 
         <el-main style="background-color:#F2F4F5;">
           <Breadcrumb style="margin-bottom: 15px"/>
-          <router-view/>
+          <router-view style="min-height: 650px"/>
         </el-main>
 
         <Footer/>
@@ -30,7 +30,7 @@ export default {
   },
   methods: {
     getHeight() {
-      this.scrollHeight = document.documentElement.scrollHeight - 50 + 'px'
+      this.scrollHeight = document.documentElement.scrollHeight;
     }
   },
   components: {

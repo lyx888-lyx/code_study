@@ -6,6 +6,9 @@ import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 import 'default-passive-events';
 import * as echarts from 'echarts';
+import  mavonEditor  from 'mavon-editor'
+import 'mavon-editor/dist/css/index.css'
+Vue.use(mavonEditor)
 
 Vue.prototype.$echarts = echarts;
 import axios from "axios";
@@ -18,6 +21,7 @@ Vue.config.productionTip = false
 Vue.prototype.$axios = axios;
 Vue.prototype.$debounce = debounce;
 Vue.prototype.$throttle = throttle;
+Vue.prototype.$baseImgUrl = 'https://katechian.xyz/';
 
 Vue.use(ElementUI);
 NProgress.configure({

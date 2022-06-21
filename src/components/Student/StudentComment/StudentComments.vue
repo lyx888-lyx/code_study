@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="padding-bottom: 55px">
     <div v-clickoutside="hideReplyBtn" @click="inputFocus" class="my-reply">
       <el-avatar class="header-img" :size="40" :src="myHeader"></el-avatar>
       <div class="reply-info">

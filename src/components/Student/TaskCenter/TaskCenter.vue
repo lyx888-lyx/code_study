@@ -4,115 +4,101 @@
       <div slot="header" class="clearfix">
         <span>我的任务</span>
       </div>
-      <el-table
-          :data="tableData"
-          style="width: 100%;height: auto"
-          min-height="350">
-        <el-table-column
-            fixed
-            prop="date"
-            label="日期"
-            width="150">
-        </el-table-column>
-        <el-table-column
-            prop="name"
-            label="姓名"
-            width="120">
-        </el-table-column>
-        <el-table-column
-            prop="province"
-            label="省份"
-            width="120">
-        </el-table-column>
-        <el-table-column
-            prop="city"
-            label="市区"
-            width="120">
-        </el-table-column>
-        <el-table-column
-            prop="address"
-            label="地址"
-            width="300">
-        </el-table-column>
-        <el-table-column
-            fixed="right"
-            label="操作"
-            width="120">
-          <template slot-scope="scope">
-            <el-button
-                @click.native.prevent="deleteRow(scope.$index, tableData)"
-                type="primary"
-                size="small">
-              去完成
-            </el-button>
-          </template>
-        </el-table-column>
-      </el-table>
+      <el-timeline>
+        <el-timeline-item @click.native="goTask(item.tkId, item.tkTopicId)" v-for="item in taskList" :key="item.tkId" class="task" :timestamp="item.createTime" placement="top" >
+          <el-card  class="card" >
+            <h4>{{item.topicName}}</h4>
+            <p>
+              <el-tag effect="plain" type="danger">{{item.createTime}}</el-tag>
+            </p>
+          </el-card>
+        </el-timeline-item>
+        <el-pagination
+            style="text-align: center"
+            background
+            layout="prev, pager, next"
+            :total="1000">
+        </el-pagination>
+      </el-timeline>
+
     </el-card>
   </div>
 </template>
 
 <script>
+import { getAllTask, getOneTask } from '../../../api/api';
 export default {
   name: "TaskCenter",
   data() {
     return {
-      tableData: [{
-        date: '2016-05-03',
-        name: '王小虎',
-        province: '上海',
-        city: '普陀区',
-        address: '上海市普陀区金沙江路 1518 弄',
-        zip: 200333
-      }, {
-        date: '2016-05-02',
-        name: '王小虎',
-        province: '上海',
-        city: '普陀区',
-        address: '上海市普陀区金沙江路 1518 弄',
-        zip: 200333
-      }, {
-        date: '2016-05-04',
-        name: '王小虎',
-        province: '上海',
-        city: '普陀区',
-        address: '上海市普陀区金沙江路 1518 弄',
-        zip: 200333
-      }, {
-        date: '2016-05-01',
-        name: '王小虎',
-        province: '上海',
-        city: '普陀区',
-        address: '上海市普陀区金沙江路 1518 弄',
-        zip: 200333
-      }, {
-        date: '2016-05-08',
-        name: '王小虎',
-        province: '上海',
-        city: '普陀区',
-        address: '上海市普陀区金沙江路 1518 弄',
-        zip: 200333
-      }, {
-        date: '2016-05-06',
-        name: '王小虎',
-        province: '上海',
-        city: '普陀区',
-        address: '上海市普陀区金沙江路 1518 弄',
-        zip: 200333
-      }, {
-        date: '2016-05-07',
-        name: '王小虎',
-        province: '上海',
-        city: '普陀区',
-        address: '上海市普陀区金沙江路 1518 弄',
-        zip: 200333
-      }]
+      taskList: [],
+      info: {},
+      currentPage: 1,
+      tpId: '',
+      task: {}
     }
   },
   methods: {
     deleteRow(index, rows) {
       rows.splice(index, 1);
+    },
+    goTask(id, tpId) {
+      let query = {
+        taskId: id
+      }
+      this.tpId = tpId;
+      let that = this;
+      getOneTask(query).then((res) => {
+        if (res.message.data.createCode === 1) {
+          console.log(res.message.data);
+          this.task = res.message.data.task;
+          let type = res.message.data.topic.tpType;
+          if (type === 1) {
+            type = '单选';
+          } else if (type === 2) {
+            type = '多选';
+          } else if (type === 3) {
+            type = '判断';
+          } else if (type === 5) {
+            type = '大题';
+          } else if (type === 6) {
+            type = '论述'
+          }
+          this.$router.push({
+            path: "/student/topic",
+            query: {
+              taskId: that.task.tkId,
+              type: type
+            }
+          });
+        }
+      })
+
+    },
+    getAllTaskList() {
+      let query = {
+        studentId: this.info.stId,
+        page: 1,
+        count: 5
+      }
+      getAllTask(query).then((res) => {
+        if (res.message.data.createCode === 1) {
+          let result = res.message.data.result.data;
+          for (let i in result) {
+            if (result.hasOwnProperty(i)) {
+              result[i].createTime = result[i].createTime.split("T")[0];
+            }
+          }
+
+          this.taskList = result;
+          this.currentPage = res.message.data.result.currentPage;
+        }
+      })
     }
+  },
+  mounted() {
+    this.info = JSON.parse(localStorage.getItem('info'));
+    this.getAllTaskList();
   }
 }
 </script>
@@ -122,5 +108,17 @@ export default {
     width: 70%;
     margin: 60px auto 15px auto;
     padding-top: 40px;
+  }
+
+  .task {
+    display: block;
+    cursor: pointer;
+
+    .card {
+      &:hover {
+        color: #409EFF;
+      }
+    }
+
   }
 </style>

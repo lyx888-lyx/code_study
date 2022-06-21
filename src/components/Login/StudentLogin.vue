@@ -85,7 +85,7 @@ export default {
       studentLogin(data).then((res) => {
         if (res.message.login_code === 1) {
           localStorage.setItem('token', res.message.token);
-          localStorage.setItem('info', res.message.data);
+          localStorage.setItem('info', JSON.stringify(res.message.data));
           this.$notify({
             message: '登录成功',
             type: 'success',

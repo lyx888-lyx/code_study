@@ -113,6 +113,10 @@ export default {
           'type': data.type
         }
       })
+    },
+    getTaskList() {
+      let id = this.$route.query.tkId;
+
     }
   },
   mounted() {
