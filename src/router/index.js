@@ -14,6 +14,11 @@ const routes = [
     component: () => import('../views/Login')
   },
   {
+    path: '/studyAdmin',
+    name: 'studyAdmin',
+    component: () => import('../views/Admin/Login')
+  },
+  {
     path: '/student',
     name: 'student',
     component: () => import('../views/Student/Index'),
@@ -144,6 +149,33 @@ const routes = [
             component: () => import('../components/Teacher/Manager/TaskManager'),
             meta: {
               title: '任务管理'
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    path: '/adminStudyVue',
+    name: 'AdminStudy',
+    component: () => import('../views/Admin/Index'),
+    redirect: '/adminStudyVue/main/home',
+    children: [
+      {
+        path: 'main',
+        name: 'AdminMain',
+        component: () => import('../components/Admin/Home'),
+        meta: {
+          title: '管理员中心'
+        },
+        redirect: '/adminStudyVue/main/home',
+        children: [
+          {
+            path: 'home',
+            name: 'AdminHome',
+            component: () => import('../components/Admin/Main/AdminMain'),
+            meta: {
+              title: '管理员首页'
             }
           }
         ]

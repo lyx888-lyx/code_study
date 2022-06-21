@@ -319,3 +319,16 @@ export const getOneTask = (params) => {
         params: params
     })
 }
+
+/**
+ * 任务大题(非大题)
+ * @param post
+ * @returns {AxiosPromise}
+ */
+export const makeTakeNoPicture = (data) => {
+    return instance({
+        url: `${request}/student/makeTakeNoPicture`,
+        method: 'post',
+        data: data
+    })
+}
