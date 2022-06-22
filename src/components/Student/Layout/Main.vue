@@ -114,7 +114,7 @@ export default {
           tpId: data.tpId,
           name: 'free'
         }
-      })
+      }).catch(_ => {})
     },
     getAllTopicList() {
       getAllTopic().then((res) => {

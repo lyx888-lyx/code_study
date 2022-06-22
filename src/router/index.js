@@ -198,4 +198,20 @@ const router = new VueRouter({
   routes
 })
 
+router.beforeEach((to, from, next) => {
+  if (to.path === '/') next()
+  const tokenStr = window.localStorage.getItem('token')
+  // 增加判断条件
+  if (!tokenStr && to.path !== '/login') return next('/login')
+  next()
+})
+/**
+ * 跳转登陆页面强制刷新，相当于F5
+ */
+router.afterEach((to,from)=>{
+  if(from.path !== '/' && from.path !== '/' && to.path === '/'){
+    window.location.reload();
+  }
+})
+
 export default router

@@ -11,7 +11,7 @@ let loading = null
 
 let rMap = new Map()
 
-instance.defaults.baseURL = "http://112.74.176.108:8081"
+instance.defaults.baseURL = "http://112.74.176.108:8089"
 instance.defaults.timeout = 10000
 instance.defaults.timeoutErrorMessage = "网络请求超时"
 
@@ -73,11 +73,12 @@ instance.interceptors.response.use(function (response) {
         if (error.response.status === 401) {
             localStorage.removeItem('token')
             localStorage.removeItem('dates')
-            router.push('/')
+            this.$router.push("/");
             location.reload();
             return
         }
         Message.error(error.message)
+
 
         let data = rMap.get(error.response.config.url)
         data.isRun = false
