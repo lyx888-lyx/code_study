@@ -6,6 +6,7 @@
         <el-button style="float: right;" size="mini" type="primary" @click="dialogFormVisible = true">添加题目</el-button>
       </div>
       <el-table
+          max-height="500"
           :data="topicList"
           stripe
           style="width: 100%">
@@ -343,6 +344,8 @@ export default {
         if (res.message.data.createCode === 1) {
           this.$notify.success(res.message.data.result);
           this.dialogFormVisible = false;
+          this.getAllTopicList();
+          this.restForm();
         } else {
           this.$notify.error(res.message.data.result);
         }
@@ -368,6 +371,7 @@ export default {
       }
       this.numsTf = '';
       this.numsValue = '';
+      this.form = form;
     },
     getAllTopicList() {
       getAllTopic().then((res) => {

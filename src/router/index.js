@@ -199,10 +199,14 @@ const router = new VueRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  if (to.path === '/') next()
+  if (to.path === '/') {
+    next();
+  } else if (to.path === '/teacherRegister') {
+    next();
+  }
   const tokenStr = window.localStorage.getItem('token')
   // 增加判断条件
-  if (!tokenStr && to.path !== '/login') return next('/login')
+  if (!tokenStr && to.path !== '/login' && to.path !== '/teacherRegister') return next('/login')
   next()
 })
 /**

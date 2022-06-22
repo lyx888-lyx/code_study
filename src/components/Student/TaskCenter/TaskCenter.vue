@@ -18,13 +18,16 @@
           <el-empty description="暂时没有任务哦" style="min-height: 450px"></el-empty>
         </div>
 
-<!--        <el-pagination-->
-<!--            v-if="taskList.length !== 0"-->
-<!--            style="text-align: center"-->
-<!--            background-->
-<!--            layout="prev, pager, next"-->
-<!--            :total="1000">-->
-<!--        </el-pagination>-->
+        <el-pagination
+            style="margin-top: 5px;text-align: center"
+            v-if="taskList.length !== 0"
+            layout="prev, pager, next"
+            background
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+            :current-page.sync="currentPage"
+            :page-count="totalCount">
+        </el-pagination>
       </el-timeline>
 
     </el-card>
@@ -41,7 +44,9 @@ export default {
       info: {},
       currentPage: 1,
       tpId: '',
-      task: {}
+      task: {},
+      totalCount: 0,
+      totalPage: 1
     }
   },
   methods: {
@@ -86,8 +91,8 @@ export default {
     getAllTaskList() {
       let query = {
         studentId: this.info.stId,
-        page: 1,
-        count: 10000
+        page: this.currentPage,
+        count: 5
       }
       getAllTask(query).then((res) => {
         if (res.message.data.createCode === 1) {
@@ -97,12 +102,20 @@ export default {
               result[i].createTime = result[i].createTime.split("T")[0];
             }
           }
-
           this.taskList = result;
           this.currentPage = res.message.data.result.currentPage;
+          this.totalCount = res.message.data.result.totalCount;
+          this.totalPage = res.message.data.result.totalPage;
         }
       })
-    }
+    },
+    handleSizeChange(val) {
+      console.log(`每页 ${val} 条`);
+    },
+    handleCurrentChange(val) {
+      this.currentPage = val;
+      this.getAllTaskList();
+    },
   },
   mounted() {
     this.info = JSON.parse(localStorage.getItem('info'));

@@ -1,6 +1,6 @@
 <template>
   <div class="all">
-    <el-card class="box-card" v-for="item in classList" :key="item.clId">
+    <el-card v-if="classList.length !== 0" class="box-card" v-for="item in classList" :key="item.clId">
       <div slot="header" class="clearfix">
         <span>{{item.clName}}</span>
       </div>
@@ -19,6 +19,9 @@
           </div>
         </div>
       </div>
+    </el-card>
+    <el-card v-if="classList.length === 0" style="width: 70%; margin: 0 auto" shadow="hover">
+      <el-empty  description="暂时没有加入班级哦"></el-empty>
     </el-card>
 
   </div>

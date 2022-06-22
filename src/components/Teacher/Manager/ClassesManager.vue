@@ -84,10 +84,13 @@
           </el-form-item>
           <el-form-item label="班级封面图片" :label-width="formLabelWidth">
             <el-upload
+                ref="upload"
                 action="#"
+                :limit="1"
                 list-type="picture-card"
                 style="text-align: left"
                 :on-change="changeFile"
+                :before-upload="beforeUpload"
                 :auto-upload="autoUpload">
               <i slot="default" class="el-icon-plus"></i>
               <div slot="file" slot-scope="{file}">
@@ -203,8 +206,10 @@ export default {
       clearTimeout(this.timer);
     },
     handleRemove(file) {
-      this.dialogImageUrl = '';
-      console.log(file);
+      //使用indexOf把点击的图片的索引位置找出来删掉
+      let arr = this.$refs.upload.uploadFiles
+      let index = arr.indexOf(file)
+      arr.splice(index, 1);
     },
     handlePictureCardPreview(file) {
       this.dialogImageUrl = file.url;
@@ -237,6 +242,7 @@ export default {
     }).then((res) => {
         if (res.data.message.register_code === 1 && res.data.message.data.createCode === 1) {
           this.$notify.success(res.data.message.data.result);
+          this.handleRemove();
           this.restForm();
           this.getAllClass();
         } else {
@@ -301,7 +307,24 @@ export default {
         headPicture: '',
       };
       this.fileRaw = {};
-    }
+    },
+    beforeUpload(file) {
+      const fileSuffix = file.name.substring(file.name.lastIndexOf(".") + 1);
+
+      const whiteList = [".jpg", ".jpeg", ".png"];
+
+      if (whiteList.indexOf(fileSuffix) === -1) {
+        this.$message.error('上传文件只能是 jpg、jpeg、png格式');
+        return false;
+      }
+
+      const isLt1M = file.size / 1024 / 1024 < 1;
+
+      if (!isLt1M) {
+        this.$message.error('上传文件大小不能超过 1MB');
+        return false;
+      }
+    },
   },
   mounted() {
     this.getAllClass();

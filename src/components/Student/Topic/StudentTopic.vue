@@ -92,26 +92,40 @@
             <el-link type="danger" :underline="false">题目答案</el-link>
           </div>
           <div class="content">
-            {{ tpAnswer }}
+            {{ tpAnswer === '' ? '暂无答案' : tpAnswer }}
           </div>
           <div class="content" v-if="type === '单选'">
             <el-link type="primary" :underline="false">我的答案</el-link>
-            <div>{{radio}}</div>
+            <div>{{ radio }}</div>
           </div>
           <div class="content" v-if="type === '多选'">
             <el-link type="primary" :underline="false">我的答案&emsp;</el-link>
             <span v-for="item in checkList" :key="item">
-              <span>{{item}}</span>
+              <span>{{ item }}</span>
             </span>
           </div>
           <div class="content" v-if="type === '判断'">
             <el-link type="primary" :underline="false">我的答案</el-link>
-            <div>{{judge}}</div>
+            <div>{{ judge }}</div>
           </div>
           <div class="content" v-if="type === '论述'">
             <el-link type="primary" :underline="false">我的答案</el-link>
           </div>
+          <div style="margin-top: 15px" v-if="isBig">
+            <p>作答正确人数:
+              <el-tag type="primary" effect="plain">{{ tpRightPersons }}</el-tag>
+              <br/></p>
+            <p>总共作答人数:
+              <el-tag type="primary" effect="plain">{{ tpPersons }}</el-tag>
+              <br/></p>
+            <p>正确率:
+              <el-tag type="danger" effect="plain">
+                {{ (Number(this.tpRightPersons) / Number(this.tpPersons)).toFixed(2) * 100 + "%" }}
+              </el-tag>
+            </p>
+          </div>
         </el-card>
+
       </el-card>
       <el-dialog :visible.sync="dialogVisible">
         <img width="100%" :src="dialogImageUrl" alt="">
@@ -146,7 +160,7 @@
             <el-radio label="D" class="answer">{{ options[3] }}</el-radio>
           </el-radio-group>
         </div>
-        <div class="content"  v-else-if="type === '多选'">
+        <div class="content" v-else-if="type === '多选'">
           <el-checkbox-group v-model="checkList" ref="answerLater" :disabled="task.tkOver === 1">
             <el-checkbox label="A" class="answer">{{ options[0] }}</el-checkbox>
             <el-checkbox label="B" class="answer">{{ options[1] }}</el-checkbox>
@@ -219,6 +233,11 @@
           <div class="content">
             {{ tpAnswer === '' ? '暂无参考答案' : tpAnswer }}
           </div>
+          <!--          <div style="margin-top: 15px">-->
+          <!--            <p>作答正确人数: <el-tag type="primary" effect="plain">{{tsTopicRight}}</el-tag><br /></p>-->
+          <!--            <p>总共作答人数: <el-tag type="primary" effect="plain">{{tpPersons}}</el-tag><br /></p>-->
+          <!--            <p>正确率: <el-tag type="danger" effect="plain">{{(Number(this.tsTopicRight) / Number(this.tpPersons)).toFixed(2) * 100 + "%"}}</el-tag></p>-->
+          <!--          </div>-->
         </el-card>
       </el-card>
       <el-dialog :visible.sync="dialogVisible">
@@ -242,7 +261,8 @@ import {
   makeQuestionNoPicture,
   makeQuestionWithPicture,
   getOneTask,
-  makeTakeNoPicture
+  makeTakeNoPicture,
+  getStudentInformation
 } from '../../../api/api';
 
 export default {
@@ -274,13 +294,16 @@ export default {
       taskId: '',
       task: {},
       tpId: '',
-      studentAnswer: {}
+      studentAnswer: {},
+      tpPersons: '',
+      tpRightPersons: '',
+      tsTopicRight: '',
+      isBig: true
     }
   },
   methods: {
     submitAnswer() {
       if (this.tid !== '') {
-        console.log(1)
         if (this.type === '单选') {
           let formData = new FormData();
           formData.append("studentId", this.info.stId);
@@ -290,6 +313,16 @@ export default {
           makeQuestionNoPicture(formData).then((res) => {
             if (res.message.data.createCode === 1) {
               this.tpAnswer = res.message.data.topic.tpAnswer;
+              if (res.message.data.topic.tpRightPersons !== null) {
+                this.tpRightPersons = res.message.data.topic.tpRightPersons;
+              } else {
+                this.tpRightPersons = 0;
+              }
+              if (res.message.data.topic.tpPersons !== null) {
+                this.tpPersons = res.message.data.topic.tpPersons;
+              } else {
+                this.tpPersons = 1;
+              }
               this.answerLater = true;
               this.$notify.success("回答成功");
             } else {
@@ -326,6 +359,16 @@ export default {
                 }
                 this.tpAnswer = answer;
                 this.$notify.success("回答成功");
+                if (res.message.data.topic.tpRightPersons !== null) {
+                  this.tpRightPersons = res.message.data.topic.tpRightPersons;
+                } else {
+                  this.tpRightPersons = 0;
+                }
+                if (res.message.data.topic.tpPersons !== null) {
+                  this.tpPersons = res.message.data.topic.tpPersons;
+                } else {
+                  this.tpPersons = 1;
+                }
                 // console.log(this.checkList);
                 this.parsing = true;
                 this.isComment = true;
@@ -339,9 +382,9 @@ export default {
             this.$notify.error("请选择选项");
           }
         } else if (this.type === '判断') {
-          console.log(this.judge);
           this.parsing = true;
           this.isComment = true;
+          this.answerLater = true;
           let formData = new FormData();
           formData.append("studentId", this.info.stId);
           formData.append("topicId", this.tid);
@@ -350,6 +393,16 @@ export default {
           makeQuestionNoPicture(formData).then((res) => {
             if (res.message.data.createCode === 1) {
               this.tpAnswer = res.message.data.topic.tpAnswer;
+              if (res.message.data.topic.tpRightPersons !== null) {
+                this.tpRightPersons = res.message.data.topic.tpRightPersons;
+              } else {
+                this.tpRightPersons = 0;
+              }
+              if (res.message.data.topic.tpPersons !== null) {
+                this.tpPersons = res.message.data.topic.tpPersons;
+              } else {
+                this.tpPersons = 1;
+              }
               this.$notify.success("回答成功");
             } else {
               this.$notify.error("回答失败");
@@ -462,6 +515,8 @@ export default {
               // this.judge = this.studentAnswer.saAnswer;
               this.$notify.success("答题成功");
               this.getTaskOne();
+              this.parsing = true;
+              this.isComment = true;
             } else {
               this.$notify.error("答题失败");
             }
@@ -478,6 +533,8 @@ export default {
             if (res.message.data.createCode === 1) {
               this.$notify.success("上传成功");
               this.getTaskOne();
+              this.parsing = true;
+              this.isComment = true;
             } else {
               this.$notify.error("上传失败");
             }
@@ -520,7 +577,6 @@ export default {
         if (res.message.data.createCode === 1) {
           this.topic = res.message.data.result;
         }
-        console.log(this.topic);
         if (this.type === '多选') {
           let option = this.topic.tpOption.split("/")
           for (let i in option) {
@@ -561,8 +617,19 @@ export default {
         if (res.message.data.createCode === 1) {
           this.topic = res.message.data.topic;
           this.task = res.message.data.task;
-          if (this.task.tkOver === 1) {
+          if (res.message.data.topic.tpRightPersons !== null) {
+            this.tpRightPersons = res.message.data.topic.tpRightPersons;
+          } else {
+            this.tpRightPersons = 0;
+          }
+          if (res.message.data.topic.tpPersons !== null) {
+            this.tpPersons = res.message.data.topic.tpPersons;
+          } else {
+            this.tpPersons = 1;
+          }
+          if (res.message.data.studentAnswer) {
             this.studentAnswer = res.message.data.studentAnswer;
+            this.tsTopicRight = res.message.data.topicStatistics.tsTopicRight;
           }
           if (this.type === '多选') {
             let option = this.topic.tpOption.split("/");
@@ -592,10 +659,11 @@ export default {
             // console.log(option);
           } else if (this.type === '单选') {
             let option = this.topic.tpOption.split("/");
+            console.log(option);
             if (this.task.tkOver === 1) {
               this.radio = this.studentAnswer.saAnswer;
             }
-            this.tpAnswer = this.radio;
+            this.tpAnswer = this.topic.tpAnswer;
             for (let i in option) {
               if (option.hasOwnProperty(i)) {
                 this.options.push(option[i]);
@@ -669,17 +737,35 @@ export default {
         this.$message.error('上传文件大小不能超过 1MB');
         return false;
       }
+    },
+    getStudentInfo() {
+      let query = {
+        studentId: this.info.stId
+      }
+      getStudentInformation(query).then((res) => {
+        if (res.message.data.createCode === 1) {
+          let result = res.message.data.result;
+          if (result.stPicturePath === "") {
+            result.stPicturePath = this.$baseImgUrl + "teacher/b13c30aa6dea450cab872a53b77629b2.jpg";
+          }
+          localStorage.setItem('info', JSON.stringify(result));
+        }
+      })
     }
   },
   mounted() {
     this.info = JSON.parse(localStorage.getItem('info'));
+    this.getStudentInfo();
     this.type = this.$route.query.type;
+    if (this.type === '大题') {
+      this.isBig = false;
+    } else this.isBig = this.type !== '论述';
     if (this.$route.query.name == 'free') {
       this.tid = this.$route.query.tpId;
       this.tpId = this.$route.query.tpId;
       localStorage.setItem('tpId', this.tpId);
       this.getTopicDetails();
-    } else if (this.$route.query.name == 'noFree'){
+    } else if (this.$route.query.name == 'noFree') {
       this.taskId = this.$route.query.taskId;
       this.tpId = this.$route.query.tpId;
       localStorage.setItem('tpId', this.tpId);
