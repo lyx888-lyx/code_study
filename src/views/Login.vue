@@ -16,7 +16,7 @@
           </el-tabs>
         </el-main>
         <el-footer>
-          <el-divider content-position="right">版权所有<span @click="goAdmin">©</span>杭科院</el-divider>
+          <el-divider content-position="right">版权所有<span @click="goRegister">©</span>杭科院</el-divider>
         </el-footer>
       </el-container>
     </el-card>
@@ -43,8 +43,8 @@ export default {
     handleClick(tab, event) {
       // console.log(tab, event);
     },
-    goAdmin() {
-      this.$router.push("/studyAdmin");
+    goRegister() {
+      this.$router.push("/teacherRegister");
     }
   }
 }

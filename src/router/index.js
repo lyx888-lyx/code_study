@@ -181,6 +181,11 @@ const routes = [
         ]
       }
     ]
+  },
+  {
+    path: '/teacherRegister',
+    name: 'TeacherRegister',
+    component: () => import('../components/Register/TeacherRegister')
   }
 ]
 

@@ -28,6 +28,19 @@ export const teacherLogin = (data) => {
     });
 }
 
+/**
+ * 教师注册
+ * @param data
+ * @returns {AxiosPromise}
+ */
+export const userRegister = (data) => {
+    return instance({
+        url: `${request}/logon/userRegister`,
+        method: 'post',
+        data: data
+    })
+}
+
 // 教师管理
 /**
  * 添加消息

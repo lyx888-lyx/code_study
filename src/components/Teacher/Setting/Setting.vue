@@ -170,9 +170,10 @@ export default {
       let { name, gender, age, phone, qq, wx, mailbox, introduce } = this.form;
       formData.append("teacherId", this.t_info.tid);
       formData.append("name", name);
-      if (gender === '男') {
+      console.log(gender)
+      if (gender === '1') {
         formData.append("gender", "1");
-      } else if (gender === '女') {
+      } else if (gender === '2') {
         formData.append("gender", "2");
       }
       formData.append("age", age);
