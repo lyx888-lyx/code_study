@@ -13,7 +13,7 @@
       <el-descriptions-item label="性别" :span="2">{{st_list.stGender === '' ? '请完善' : (st_list.stGender == '1' ? '男' : '女')}}</el-descriptions-item>
       <el-descriptions-item label="手机号" :span="2">{{st_list.stPhone}}</el-descriptions-item>
       <el-descriptions-item label="邮箱" :span="2">{{st_list.stMailbox}}</el-descriptions-item>
-      <el-descriptions-item label="邮箱" :span="2">{{st_list.stMailbox}}</el-descriptions-item>
+<!--      <el-descriptions-item label="邮箱" :span="2">{{st_list.stMailbox}}</el-descriptions-item>-->
       <el-descriptions-item label="QQ" :span="2">{{st_list.stQq === null ? '请完善' : st_list.stQq}}</el-descriptions-item>
       <el-descriptions-item label="WX" :span="2">{{st_list.stWx === null ? '请完善' : st_list.stWx}}</el-descriptions-item>
     </el-descriptions>

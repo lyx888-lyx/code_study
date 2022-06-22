@@ -4,8 +4,9 @@
       <div slot="header" class="clearfix">
         <span>我的任务</span>
       </div>
+
       <el-timeline>
-        <el-timeline-item @click.native="goTask(item.tkId, item.tkTopicId)" v-for="item in taskList" :key="item.tkId" class="task" :timestamp="item.createTime" placement="top" >
+        <el-timeline-item v-if="taskList.length!==0" @click.native="goTask(item.tkId, item.tkTopicId)" v-for="item in taskList" :key="item.tkId" class="task" :timestamp="item.createTime" placement="top" >
           <el-card  class="card" >
             <h4>{{item.topicName}}</h4>
             <p>
@@ -13,12 +14,17 @@
             </p>
           </el-card>
         </el-timeline-item>
-        <el-pagination
-            style="text-align: center"
-            background
-            layout="prev, pager, next"
-            :total="1000">
-        </el-pagination>
+        <div v-if="taskList.length === 0">
+          <el-empty description="暂时没有任务哦" style="min-height: 450px"></el-empty>
+        </div>
+
+<!--        <el-pagination-->
+<!--            v-if="taskList.length !== 0"-->
+<!--            style="text-align: center"-->
+<!--            background-->
+<!--            layout="prev, pager, next"-->
+<!--            :total="1000">-->
+<!--        </el-pagination>-->
       </el-timeline>
 
     </el-card>
@@ -68,7 +74,9 @@ export default {
             path: "/student/topic",
             query: {
               taskId: that.task.tkId,
-              type: type
+              type: type,
+              tpId: tpId,
+              name: 'noFree'
             }
           });
         }
@@ -79,7 +87,7 @@ export default {
       let query = {
         studentId: this.info.stId,
         page: 1,
-        count: 5
+        count: 10000
       }
       getAllTask(query).then((res) => {
         if (res.message.data.createCode === 1) {

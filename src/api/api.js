@@ -1,7 +1,7 @@
 import instance from '../utils/request';
 
-let request = 'http://112.74.176.108:8089'
-
+// let request = 'http://112.74.176.108:8089'
+const request = 'https://www.katechian.xyz'
 /**
  * 学生登录
  * @param data
@@ -40,6 +40,19 @@ export const addInformation = (data) => {
         method: 'post',
         data: data
     });
+}
+
+/**
+ * 获取发布的任务
+ * @param params
+ * @returns {AxiosPromise}
+ */
+export const getReleaseTask = (params) => {
+    return instance({
+        url: `${request}/teacher/getReleaseTask`,
+        method: 'get',
+        params: params
+    })
 }
 
 /**
@@ -322,13 +335,65 @@ export const getOneTask = (params) => {
 
 /**
  * 任务大题(非大题)
- * @param post
  * @returns {AxiosPromise}
+ * @param data
  */
 export const makeTakeNoPicture = (data) => {
     return instance({
         url: `${request}/student/makeTakeNoPicture`,
         method: 'post',
         data: data
+    })
+}
+
+/**
+ * 添加评论
+ * @param data
+ * @returns {AxiosPromise}
+ */
+export const addComment = (data) => {
+    return instance({
+        url: `${request}/student/addComment`,
+        method: 'post',
+        data: data
+    })
+}
+
+/**
+ * 获取所有评论
+ * @param params
+ * @returns {AxiosPromise}
+ */
+export const getComment = (params) => {
+    return instance({
+        url: `${request}/topic/getComment`,
+        method: 'get',
+        params: params
+    })
+}
+
+/**
+ * 评论点赞
+ * @param params
+ * @returns {AxiosPromise}
+ */
+export const commentLike = (params) => {
+    return instance({
+        url: `${request}/topic/like`,
+        method: 'get',
+        params: params
+    })
+}
+
+/**
+ * 评论点踩
+ * @param params
+ * @returns {AxiosPromise}
+ */
+export const commentUnLike = (params) => {
+    return instance({
+        url: `${request}/topic/unlike`,
+        method: 'get',
+        params: params
     })
 }

@@ -139,15 +139,15 @@
           {{ topic.tpText }}
         </div>
         <div class="content" v-if="type === '单选'">
-          <el-radio-group :disabled="task.tkOver === 1">
-            <el-radio v-model="radio" label="A" class="answer">{{ options[0] }}</el-radio>
-            <el-radio v-model="radio" label="B" class="answer">{{ options[1] }}</el-radio>
-            <el-radio v-model="radio" label="C" class="answer">{{ options[2] }}</el-radio>
-            <el-radio v-model="radio" label="D" class="answer">{{ options[3] }}</el-radio>
+          <el-radio-group v-model="radio" :disabled="task.tkOver === 1">
+            <el-radio label="A" class="answer">{{ options[0] }}</el-radio>
+            <el-radio label="B" class="answer">{{ options[1] }}</el-radio>
+            <el-radio label="C" class="answer">{{ options[2] }}</el-radio>
+            <el-radio label="D" class="answer">{{ options[3] }}</el-radio>
           </el-radio-group>
         </div>
-        <div class="content" :disabled="task.tkOver === 1" v-else-if="type === '多选'">
-          <el-checkbox-group v-model="checkList" ref="answerLater" :disabled="answerLater">
+        <div class="content"  v-else-if="type === '多选'">
+          <el-checkbox-group v-model="checkList" ref="answerLater" :disabled="task.tkOver === 1">
             <el-checkbox label="A" class="answer">{{ options[0] }}</el-checkbox>
             <el-checkbox label="B" class="answer">{{ options[1] }}</el-checkbox>
             <el-checkbox label="C" class="answer">{{ options[2] }}</el-checkbox>
@@ -217,10 +217,7 @@
             <el-link type="danger" :underline="false">题目答案</el-link>
           </div>
           <div class="content">
-            {{ tpAnswer }}
-          </div>
-          <div class="content">
-            <el-link type="primary" :underline="false">我的答案</el-link>
+            {{ tpAnswer === '' ? '暂无参考答案' : tpAnswer }}
           </div>
         </el-card>
       </el-card>
@@ -232,7 +229,7 @@
         <div class="title">
           <el-link type="primary" :underline="false" style="margin-bottom: 15px">题目评论</el-link>
         </div>
-        <StudentComments/>
+        <StudentComments :topicid="tpId"/>
       </el-card>
     </el-card>
   </div>
@@ -275,7 +272,9 @@ export default {
       disabled: false,
       body: '',
       taskId: '',
-      task: {}
+      task: {},
+      tpId: '',
+      studentAnswer: {}
     }
   },
   methods: {
@@ -313,6 +312,7 @@ export default {
             }
           }
           formData.append("answer", answer);
+          formData.append("taskId", this.taskId);
           if (this.checkList.length !== 0) {
             makeQuestionNoPicture(formData).then((res) => {
               if (res.message.data.createCode === 1) {
@@ -366,6 +366,9 @@ export default {
           makeQuestionWithPicture(formData).then((res) => {
             if (res.message.data.createCode === 1) {
               this.$notify.success("上传成功");
+              this.answerLater = true;
+              this.parsing = true;
+              this.isComment = true;
             } else {
               this.$notify.error("上传失败");
             }
@@ -380,6 +383,8 @@ export default {
 
           makeQuestionNoPicture(formData).then((res) => {
             if (res.message.data.createCode === 1) {
+              this.parsing = true;
+              this.isComment = true;
               this.$notify.success("答题成功");
             } else {
               this.$notify.error("上传失败");
@@ -400,7 +405,10 @@ export default {
           makeTakeNoPicture(formData).then((res) => {
             if (res.message.data.createCode === 1) {
               this.tpAnswer = res.message.data.topic.tpAnswer;
+              // this.studentAnswer = res.message.data.studentAnswer;
+              // this.radio = this.studentAnswer.saAnswer;
               this.$notify.success("答题成功");
+              this.getTaskOne();
             } else {
               this.$notify.error("答题失败");
             }
@@ -410,8 +418,9 @@ export default {
 
         } else if (this.type === '多选') {
           let formData = new FormData();
+          let tpId = localStorage.getItem('tpId');
           formData.append("studentId", this.info.stId);
-          formData.append("topicId", this.tid);
+          formData.append("topicId", tpId);
           let answer = "";
           for (let i in this.checkList) {
             if (this.checkList.hasOwnProperty(i)) {
@@ -426,6 +435,7 @@ export default {
                 this.answerLater = true;
                 this.tpAnswer = res.message.data.topic.tpAnswer;
                 this.$notify.success("回答成功");
+                this.getTaskOne();
                 // console.log(this.checkList);
                 this.parsing = true;
                 this.isComment = true;
@@ -448,7 +458,10 @@ export default {
           formData.append("taskId", this.taskId);
           makeTakeNoPicture(formData).then((res) => {
             if (res.message.data.createCode === 1) {
+              // this.studentAnswer = res.message.data.studentAnswer;
+              // this.judge = this.studentAnswer.saAnswer;
               this.$notify.success("答题成功");
+              this.getTaskOne();
             } else {
               this.$notify.error("答题失败");
             }
@@ -458,12 +471,13 @@ export default {
         } else if (this.type === '大题') {
           let formData = new FormData();
           formData.append("studentId", this.info.stId);
-          formData.append("topicId", this.tid);
+          formData.append("topicId", this.topic.tpId);
           formData.append("answerPicture", this.topicPic);
 
           makeQuestionWithPicture(formData).then((res) => {
             if (res.message.data.createCode === 1) {
               this.$notify.success("上传成功");
+              this.getTaskOne();
             } else {
               this.$notify.error("上传失败");
             }
@@ -480,6 +494,7 @@ export default {
           makeTakeNoPicture(formData).then((res) => {
             if (res.message.data.createCode === 1) {
               this.$notify.success("答题成功");
+              this.getTaskOne();
             } else {
               this.$notify.error("上传失败");
             }
@@ -546,9 +561,27 @@ export default {
         if (res.message.data.createCode === 1) {
           this.topic = res.message.data.topic;
           this.task = res.message.data.task;
-
+          if (this.task.tkOver === 1) {
+            this.studentAnswer = res.message.data.studentAnswer;
+          }
           if (this.type === '多选') {
-            let option = this.topic.tpOption.split("/")
+            let option = this.topic.tpOption.split("/");
+            let studentAnswer
+            if (this.task.tkOver === 1) {
+              studentAnswer = this.studentAnswer.saAnswer.split("/");
+            }
+            for (let i in studentAnswer) {
+              if (studentAnswer.hasOwnProperty(i)) {
+                this.checkList.push(studentAnswer[i]);
+              }
+            }
+            let answer = "";
+            for (let i in this.checkList) {
+              if (this.checkList.hasOwnProperty(i)) {
+                answer += this.checkList[i] + " ";
+              }
+            }
+            this.tpAnswer = answer;
             for (let i in option) {
               if (option.hasOwnProperty(i)) {
                 let sel = option[i].split(" ");
@@ -559,6 +592,10 @@ export default {
             // console.log(option);
           } else if (this.type === '单选') {
             let option = this.topic.tpOption.split("/");
+            if (this.task.tkOver === 1) {
+              this.radio = this.studentAnswer.saAnswer;
+            }
+            this.tpAnswer = this.radio;
             for (let i in option) {
               if (option.hasOwnProperty(i)) {
                 this.options.push(option[i]);
@@ -566,6 +603,10 @@ export default {
             }
           } else if (this.type === '判断') {
             let option = this.topic.tpOption.split("/");
+            if (this.task.tkOver === 1) {
+              this.judge = this.studentAnswer.saAnswer;
+            }
+            this.tpAnswer = this.judge;
             for (let i in option) {
               if (option.hasOwnProperty(i)) {
                 this.options.push(option[i]);
@@ -633,11 +674,15 @@ export default {
   mounted() {
     this.info = JSON.parse(localStorage.getItem('info'));
     this.type = this.$route.query.type;
-    if (this.$route.query.id) {
-      this.tid = this.$route.query.id;
+    if (this.$route.query.name == 'free') {
+      this.tid = this.$route.query.tpId;
+      this.tpId = this.$route.query.tpId;
+      localStorage.setItem('tpId', this.tpId);
       this.getTopicDetails();
-    } else if (this.$route.query.taskId) {
-      this.taskId = this.$route.query.taskId
+    } else if (this.$route.query.name == 'noFree'){
+      this.taskId = this.$route.query.taskId;
+      this.tpId = this.$route.query.tpId;
+      localStorage.setItem('tpId', this.tpId);
       this.getTaskOne();
     }
     this.subject = this.$store.state.subject;
@@ -663,6 +708,10 @@ export default {
 
 .content {
   margin-top: 20px;
+}
+
+.box-card {
+  margin-bottom: 20px;
 }
 
 .footer {

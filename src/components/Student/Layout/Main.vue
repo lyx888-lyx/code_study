@@ -33,17 +33,17 @@
         <el-table-column
             prop="tpName"
             label="题目"
-            width="600">
+            width="480">
         </el-table-column>
-<!--        <el-table-column-->
-<!--            prop="difficulty"-->
-<!--            label="难度"-->
-<!--            sortable-->
-<!--            width="120">-->
-<!--          <template slot-scope="scope">-->
-<!--            <el-link :type="scope.row.complexityType" :underline="false">{{ scope.row.difficulty }}</el-link>-->
-<!--          </template>-->
-<!--        </el-table-column>-->
+        <el-table-column
+            prop="difficulty"
+            label="难度"
+            sortable
+            width="120">
+          <template slot-scope="scope">
+            <el-link :type="scope.row.complexityType" :underline="false">{{ scope.row.difficulty }}</el-link>
+          </template>
+        </el-table-column>
         <el-table-column
             fixed="right"
             label="操作"
@@ -105,13 +105,14 @@ export default {
       this.topicList = data;
     },
     goTopic(index, data) {
-      console.log(data.tpType);
+      console.log(data);
       this.$store.commit("addSubject", data);
       this.$router.push({
         path: '/student/topic',
         query: {
-          'type': data.tpType,
-          'id': data.tpId
+          type: data.tpType,
+          tpId: data.tpId,
+          name: 'free'
         }
       })
     },

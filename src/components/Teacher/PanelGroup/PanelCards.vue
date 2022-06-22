@@ -9,7 +9,7 @@
           <div class="card-panel-text">
             当前用户数
           </div>
-          <span class="card-panel-num">{{ numberMsg.storeCount || 0 }}</span>
+          <span class="card-panel-num">{{ numberMsg.storeCount || 1 }}</span>
         </div>
       </div>
     </el-col>
@@ -20,9 +20,9 @@
         </div>
         <div class="card-panel-description">
           <div class="card-panel-text">
-            当前运货员数
+            当前在线人数
           </div>
-          <span class="card-panel-num">{{ numberMsg.deliveryCount || 0 }}</span>
+          <span class="card-panel-num">{{ numberMsg.deliveryCount || 1 }}</span>
         </div>
       </div>
     </el-col>
@@ -33,9 +33,9 @@
         </div>
         <div class="card-panel-description">
           <div class="card-panel-text">
-            本周订单数
+            本周学生注册数
           </div>
-          <span class="card-panel-num">{{ numberMsg.orderCount || 0 }}</span>
+          <span class="card-panel-num">{{ numberMsg.orderCount || 22 }}</span>
         </div>
       </div>
     </el-col>
@@ -46,9 +46,9 @@
         </div>
         <div class="card-panel-description">
           <div class="card-panel-text">
-            本周成交额
+            本周题目发布数
           </div>
-          <span class="card-panel-num">{{ numberMsg.priceCount || 0 }}</span>
+          <span class="card-panel-num">{{ numberMsg.priceCount || 35 }}</span>
         </div>
       </div>
     </el-col>

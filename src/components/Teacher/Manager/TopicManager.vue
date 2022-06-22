@@ -34,7 +34,7 @@
           <template slot-scope="scope">
             <el-button @click="lookHandleClick(scope.row)" type="info" size="mini">查看</el-button>
 <!--            <el-button @click="handleClick(scope.row)" type="primary" size="mini">编辑</el-button>-->
-            <el-button type="danger" size="mini">删除</el-button>
+            <el-button type="danger" size="mini" @click="delHandClick(scope.row)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -190,7 +190,8 @@
 </template>
 
 <script>
-import { addTopicNoPicture, getAllTopic, getTopic } from '../../../api/api';
+import {addTopicNoPicture, getAllTopic, getTopic} from '../../../api/api';
+
 export default {
   name: "TopicManager",
   data() {
@@ -401,6 +402,29 @@ export default {
       }).catch((err) => {
         this.$notify.error(err);
       })
+    },
+    delHandClick(row) {
+      this.$confirm('此操作将执行删除操作, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.topicList.some((item, i) => {
+          if (item.tpId === row.tpId) {
+            this.topicList.splice(i, 1);
+            return true;
+          }
+        })
+        this.$notify({
+          type: 'success',
+          message: '删除成功!'
+        });
+      }).catch(() => {
+        this.$notify({
+          type: 'info',
+          message: '已取消删除'
+        });
+      });
     }
   },
   mounted() {

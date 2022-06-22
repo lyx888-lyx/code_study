@@ -16,7 +16,7 @@
 </template>
 
 <script>
-import { studentLogin } from '../../api/api';
+import { studentLogin, getStudentInformation } from '../../api/api';
 export default {
   name: "StudentLogin",
   data() {

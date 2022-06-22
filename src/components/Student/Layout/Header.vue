@@ -31,7 +31,7 @@
               <el-avatar src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"></el-avatar>
             </span>
             <el-dropdown-menu slot="dropdown" style="z-index: 9999">
-              <el-dropdown-item disabled>张三</el-dropdown-item>
+              <el-dropdown-item disabled></el-dropdown-item>
               <el-dropdown-item divided>
                 <router-link to="/student/info/data" v-slot="{navigate, href}" custom>
                   <div @click="navigate" @keypress.enter="navigate" role="link">个人中心</div>
@@ -53,7 +53,9 @@
 export default {
   name: "Header",
   data() {
-    return {}
+    return {
+      info: {}
+    }
   },
   methods: {
     handleScroll() {
@@ -79,12 +81,14 @@ export default {
       }).then(() => {
         this.$router.push('/');
         this.$notify.success("退出成功");
+        localStorage.clear();
       }).catch(() => {
         console.log('取消')
       })
     }
   },
   mounted() {
+    this.info = JSON.parse(localStorage.getItem('info'));
     window.addEventListener('scroll', this.handleScroll)
     // window.location.reload();
   }

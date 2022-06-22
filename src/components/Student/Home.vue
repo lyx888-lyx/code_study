@@ -14,7 +14,7 @@ export default {
   methods: {
     getStudentInfo() {
       let info = JSON.parse(localStorage.getItem('info'));
-      if (info.stPictureId === null || info.stQq === null || info.stWx === null) {
+      if (info.stQq === null || info.stWx === null) {
         this.$alert('信息不完善，请先去完善信息', '完善信息', {
           showClose: false,
           confirmButtonText: '确定',

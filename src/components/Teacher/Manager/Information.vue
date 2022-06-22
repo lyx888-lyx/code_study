@@ -14,11 +14,7 @@
         <el-table-column
             prop="imText"
             label="消息内容"
-            width="180">
-        </el-table-column>
-        <el-table-column
-            prop="address"
-            label="地址">
+            width="400">
         </el-table-column>
         <el-table-column
             align="right">
@@ -45,6 +41,16 @@
       </el-pagination>
       <el-dialog title="发布消息" :visible.sync="dialogFormVisible">
         <el-form :model="form">
+          <el-form-item label="请选择班级" :label-width="formLabelWidth">
+            <el-select v-model="value" placeholder="请选择"  >
+              <el-option
+                  v-for="item in classList"
+                  :key="item.clId"
+                  :label="item.clName"
+                  :value="item.clId">
+              </el-option>
+            </el-select>
+          </el-form-item>
           <el-form-item label="消息内容" :label-width="formLabelWidth">
             <el-input
                 type="textarea"
@@ -63,35 +69,21 @@
 </template>
 
 <script>
-import {addInformation, getMessageByTeacherId} from '../../../api/api';
+import {addInformation, getClass, getMessageByTeacherId} from '../../../api/api';
 export default {
   name: "Information",
   data() {
     return {
-      tableData: [{
-        date: '2016-05-02',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1518 弄'
-      }, {
-        date: '2016-05-04',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1517 弄'
-      }, {
-        date: '2016-05-01',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1519 弄'
-      }, {
-        date: '2016-05-03',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1516 弄'
-      }],
+      tableData: [],
       dialogFormVisible: false,
       form: {
         content: ''
       },
       formLabelWidth: '120px',
       info: {},
-      pageList: {}
+      pageList: {},
+      classList: [],
+      value: ''
     }
   },
   methods: {
@@ -109,7 +101,7 @@ export default {
         igForId: info.tid,
         igRoleId: info.troleId,
         igFromAll: 2,
-        igFromClass: 6
+        igFromClass: this.value
       }
       addInformation(data).then((res) => {
         if (res.message.data.createCode === 1) {
@@ -146,11 +138,37 @@ export default {
       }).catch((err) => {
         this.$notify.error(err);
       })
-    }
+    },
+    getAllClass() {
+      let info = JSON.parse(localStorage.getItem('info'));
+      let query = {
+        teacherId: info.tid
+      }
+      getClass(query).then((res) => {
+        if (res.message.data.createCode === 1) {
+          let result = res.message.data.result;
+          for (let i in result) {
+            if (result.hasOwnProperty(i)) {
+              let creTime = result[i].clCreateTime.split("T")[0];
+              let endTime = result[i].clEndTime.split("T")[0];
+              result[i].clCreateTime = creTime;
+              result[i].clEndTime = endTime;
+              result[i].clPicturePath = this.$baseImgUrl + result[i].clPicturePath;
+            }
+          }
+          this.classList = result;
+        } else {
+          this.$notify.error("暂无班级");
+        }
+      }).catch((err) => {
+        console.log(err);
+      })
+    },
   },
   mounted() {
     this.info = JSON.parse(localStorage.getItem('info'));
     this.getAllMessage();
+    this.getAllClass();
   }
 }
 </script>

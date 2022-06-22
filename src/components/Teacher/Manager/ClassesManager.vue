@@ -228,7 +228,7 @@ export default {
       formData.append("endTime", this.form.openTime[1] + " 00:00:00");
 
       this.$axios({
-        url: "http://112.74.176.108:8081/teacher/createClass",
+        url: "https://www.katechian.xyz/teacher/createClass",
         data: formData,
         method: 'post',
         headers: {

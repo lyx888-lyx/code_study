@@ -6,24 +6,49 @@
         <el-button style="float: right;" size="mini" type="primary" @click="createTask">发布任务</el-button>
       </div>
       <el-table
-          :data="tableData"
+          :data="releaseTaskList"
           stripe
           style="width: 100%">
         <el-table-column
-            prop="date"
+            prop="createTime"
             label="日期"
             width="180">
         </el-table-column>
         <el-table-column
-            prop="name"
-            label="姓名"
+            prop="tgTopicId"
+            label="发布题号"
             width="180">
         </el-table-column>
         <el-table-column
-            prop="address"
-            label="地址">
+            prop="tgShould"
+            label="应该完成人数">
+        </el-table-column>
+        <el-table-column
+            prop="tgActual"
+            label="实际完成人数">
+        </el-table-column>
+        <el-table-column
+            align="right">
+          <template slot-scope="scope">
+            <el-button
+                size="mini"
+                @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+            <el-button
+                size="mini"
+                type="danger"
+                @click="delHandClick(scope.$index, scope.row)">删除</el-button>
+          </template>
         </el-table-column>
       </el-table>
+      <el-pagination
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+          :current-page.sync="currentPage"
+          style="margin-top: 15px"
+          background
+          layout="prev, pager, next"
+          :total="1">
+      </el-pagination>
     </el-card>
     <el-dialog title="添加任务" :visible.sync="dialogTaskVisible">
       <el-form>
@@ -65,28 +90,12 @@
 </template>
 
 <script>
-import {getAllTopic, getClass, addTask, getMessageByTeacherId} from '../../../api/api';
+import {getAllTopic, getClass, addTask, getMessageByTeacherId, getReleaseTask} from '../../../api/api';
 export default {
   name: "TaskManager",
   data() {
     return {
-      tableData: [{
-        date: '2016-05-02',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1518 弄'
-      }, {
-        date: '2016-05-04',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1517 弄'
-      }, {
-        date: '2016-05-01',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1519 弄'
-      }, {
-        date: '2016-05-03',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1516 弄'
-      }],
+      tableData: [],
       dialogTaskVisible: false,
       formLabelWidth: '120px',
       value: [],
@@ -94,7 +103,11 @@ export default {
       options: [],
       classList: [],
       taskIntroduce: '',
-      info: {}
+      info: {},
+      releaseTaskList: [],
+      currentPage: 1,
+      totalCount: 0,
+      totalPage: ''
     }
   },
   methods: {
@@ -152,12 +165,65 @@ export default {
       }).catch((err) => {
         this.$notify.error(err);
       })
-    }
+    },
+    getAllTask() {
+      let query = {
+        teacherId: this.info.tid,
+        page: 1,
+        count: 5
+      }
+      getReleaseTask(query).then((res) => {
+        if (res.message.data.createCode === 1) {
+          let result = res.message.data.result.data;
+          for (let i in result) {
+            if (result.hasOwnProperty(i)) {
+              result[i].createTime = result[i].createTime.split("T")[0]
+            }
+          }
+          this.releaseTaskList = result;
+          this.currentPage = res.message.data.currentPage;
+          this.totalPage = res.message.data.totalPage;
+          this.totalCount = res.message.data.totalCount;
+          console.log(this.releaseTaskList);
+        } else {
+          this.$notify.error("获取发布任务列表失败");
+        }
+      }).catch((err) => {
+        this.$notify.error(err);
+      })
+    },
+    handleEdit() {},
+    delHandClick(index, row) {
+      this.$confirm('此操作将执行删除操作, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.releaseTaskList.some((item, i) => {
+          if (item.tgId === row.tgId) {
+            this.releaseTaskList.splice(i, 1);
+            return true;
+          }
+        })
+        this.$notify({
+          type: 'success',
+          message: '删除成功!'
+        });
+      }).catch(() => {
+        this.$notify({
+          type: 'info',
+          message: '已取消删除'
+        });
+      });
+    },
+    handleCurrentChange() {},
+    handleSizeChange() {}
   },
   mounted() {
     this.info = JSON.parse(localStorage.getItem('info'));
     this.getAllTopicList();
     this.getAllClass();
+    this.getAllTask();
   }
 }
 </script>
